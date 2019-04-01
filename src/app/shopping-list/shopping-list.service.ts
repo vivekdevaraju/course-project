@@ -9,9 +9,16 @@ export class ShoppingListService {
     onItemsEntered(ingredient:Ingredient) {
     
         this.ingredients.push(ingredient);
-        this.ingredientsChanged.emit(this.ingredients);      }
+        this.ingredientsChanged.emit(this.ingredients);      
+    }
 
       getIngredients(){
           return this.ingredients.slice();
+      }
+
+      onIngredientsAdded(ingredientAdded:Ingredient[]){
+
+        this.ingredients.push(...ingredientAdded);
+        this.ingredientsChanged.emit(this.ingredients);
       }
 }
