@@ -32,4 +32,8 @@ export class RecipeService {
       onIngredientsAdded(ingredients:Ingredient[]){
           this.shoppingListService.onIngredientsAdded(ingredients);
       }
+      getRecipeByName(index:number){
+        const recipes = this.recipes[index];          
+          return recipes;
+      }
 }
