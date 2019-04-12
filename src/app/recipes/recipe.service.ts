@@ -1,14 +1,17 @@
 import { Recipe } from "./recipe.model";
-import { EventEmitter, Injectable } from '@angular/core';
+import {Injectable } from '@angular/core';
 import { Ingredient } from '../shared/ingredients.model';
 import { ShoppingListService } from '../shopping-list/shopping-list.service';
+import { Subject } from 'rxjs';
+import { DataStorageService } from '../shared/data-storage.service';
 @Injectable()
 
 export class RecipeService {
-    constructor(private shoppingListService:ShoppingListService){
+
+    recipeChanged = new Subject<Recipe[]>();
+    constructor(private shoppingListService:ShoppingListService,private dataStorageService:DataStorageService){
 
     }
-     recipeSelected = new EventEmitter<Recipe>();
 
      recipes : Recipe[] = [new Recipe('Sandwich',
      'Healthy',
@@ -25,15 +28,61 @@ export class RecipeService {
   ])];
 
 
+
+
       getRecipes(){
+
+        //return this. getAllRecipes();
           return this.recipes.slice();
+          
       }
 
       onIngredientsAdded(ingredients:Ingredient[]){
           this.shoppingListService.onIngredientsAdded(ingredients);
       }
       getRecipeByName(index:number){
+        this.recipeChanged.next(this.recipes);
         const recipes = this.recipes[index];          
           return recipes;
+      }
+
+      onAddNewRecipe(recipe:Recipe){
+        this.recipes.push(recipe);
+        this.recipeChanged.next(this.recipes.slice());
+      }
+
+      onUpdateRecipe(index:number,recipe:Recipe){
+        this.recipes[index] = recipe;
+        this.recipeChanged.next(this.recipes.slice());
+      }
+      removeRecipe(index:number){
+        this.recipes.splice(index,1);
+        this.recipeChanged.next(this.recipes.slice());
+      }
+
+      saveRecipes()
+      {
+        this.dataStorageService.storeRecipes(this.recipes).subscribe(
+          (response) =>{
+
+          },
+          (error) =>{
+
+          }
+        );
+      }
+
+      getAllRecipes(){
+        this.dataStorageService.getAllRecipes().subscribe(
+          (recipes) =>{
+            console.log(recipes);
+           this.recipes = recipes;
+           this.recipeChanged.next(this.recipes.slice());
+          },
+          (error) =>{
+            console.log(error);
+          }
+        );
+       
       }
 }
