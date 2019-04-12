@@ -21,7 +21,7 @@ import { SignupComponent } from './auth/signup/signup.component';
 import { SigninComponent } from './auth/signin/signin.component';
 import { AuthService } from './auth/auth.service';
 import { AuthGuardService } from './auth/authguard.service';
-import { RecipesModule } from './recipes/recipies.module';
+
 
 @NgModule({
   declarations: [
